@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professores</title>
+
+    <!-- Famoso Jim Carrey -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
@@ -38,11 +40,12 @@
 <body>
     <div id="professores"></div>
     <script>
+        // Código AJAX responsável por requisitar os dados da API
         $.ajax({
             url: "/professores",
             method: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function(data) { // Criando as devidas div's caso a requisição tenha sucesso
                 var container = $("#professores");
                 data.forEach(function(professor) {
                     var professorEl = $("<div>").addClass("professor");
@@ -56,7 +59,7 @@
                         container.append(professorEl);
                     })
             },
-            error: function() {
+            error: function() { // Caso não, erronamente, algo de errado certamente não está certo.
                 console.log("Exception: a serious cagada has happened.")
             }
         })

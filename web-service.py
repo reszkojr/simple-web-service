@@ -6,21 +6,25 @@ from fastapi.staticfiles import StaticFiles
 import mysql.connector
 import json
 
+# Instanciando o objeto do FastAPI
 app = FastAPI()
 
+# Montando a pasta /static para posterior acesso dos arquivos
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Caminho da visualização dos dados
 @app.get("/")
 def index():
     return FileResponse("static/index.html")
 
+# Caminho da API
 @app.get('/professores')
 def professores():
-    print("tsasdfasftes")
     q = query("select * from professores")
     professores = jsonificador(q)
     return JSONResponse(content=professores, media_type="application/json")
 
+# Um método para "jsonificar" a query tendo em vista o uso pelo JQuery no HTML
 def jsonificador(string: str):
     json = []
     for i in string:
@@ -38,7 +42,7 @@ def query(q: str):
     connection = None
     cursor = None
     try:
-        # Conexão ao servidor MySQL/Postgres (estou usando o MySQL aqui)
+        # Conexão ao servidor MySQL/Postgres (estou usando o MySQL)
         connection = mysql.connector.connect(
             host="localhost",
             user="webservice",
@@ -58,7 +62,9 @@ def query(q: str):
     finally:
         # Código anti-cagada
         connection.close()
+        cursor.close()
 
+# Executando o Uvicorn para abrirmos um servidor web
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("web-service:app", host="localhost", port=8000, reload=True)
