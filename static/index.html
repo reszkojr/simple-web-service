@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professores</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            background-color: #1E293B;
+        }
+
+        #professores {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            column-gap: 15px;
+            row-gap: 15px;
+        }
+
+        .professor {
+            color: #82b2ff;
+            padding: 10px;
+            border: 1px;
+            background-color: #243247;
+            border-radius: 8px;
+        }
+
+        .nome {
+            font-weight: bold;
+        }
+
+        .attr {
+            color: lightgray;
+        }
+    </style>
+</head>
+<body>
+    <div id="professores"></div>
+    <script>
+        $.ajax({
+            url: "/professores",
+            method: "GET",
+            dataType: "json",
+            success: function(data) {
+                var container = $("#professores");
+                data.forEach(function(professor) {
+                    var professorEl = $("<div>").addClass("professor");
+                        var nomeEl = $("<div>").addClass("nome").text("Nome: " + professor.nome);
+                        var cpfEl = $("<div>").addClass("attr").text("CPF: " + professor.cpf);
+                        var incredibilidadeEl = $("<div>").addClass("attr").text("Incrivibilidade: " + professor.incredibilidade + "%");
+                        var materiaEl = $("<div>").addClass("attr").text("Matéria: " + professor.materia);
+                        var sexoEl = $("<div>").addClass("attr").text("Sexo: " + professor.sexo);    
+                            
+                        professorEl.append(nomeEl, cpfEl, incredibilidadeEl, materiaEl, sexoEl);
+                        container.append(professorEl);
+                    })
+            },
+            error: function() {
+                console.log("Exception: a serious cagada has happened.")
+            }
+        })
+    </script>
+</body>
+</html>
