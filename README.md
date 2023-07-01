@@ -40,10 +40,13 @@ INSERT INTO professores (nome, cpf, materia, incredibilidade, sexo) VALUES
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Professores</title>
+
+    <!-- Famoso Jim Carrey -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         body {
             background-color: #1E293B;
+            font-family: Arial;
         }
 
         #professores {
@@ -73,11 +76,12 @@ INSERT INTO professores (nome, cpf, materia, incredibilidade, sexo) VALUES
 <body>
     <div id="professores"></div>
     <script>
+        // Código AJAX responsável por requisitar os dados da API
         $.ajax({
             url: "/professores",
             method: "GET",
             dataType: "json",
-            success: function(data) {
+            success: function(data) { // Criando as devidas div's caso a requisição tenha sucesso
                 var container = $("#professores");
                 data.forEach(function(professor) {
                     var professorEl = $("<div>").addClass("professor");
@@ -91,7 +95,7 @@ INSERT INTO professores (nome, cpf, materia, incredibilidade, sexo) VALUES
                         container.append(professorEl);
                     })
             },
-            error: function() {
+            error: function() { // Caso não, erronamente, algo de errado certamente não está certo.
                 console.log("Exception: a serious cagada has happened.")
             }
         })
@@ -111,21 +115,25 @@ from fastapi.staticfiles import StaticFiles
 import mysql.connector
 import json
 
+# Instanciando o objeto do FastAPI
 app = FastAPI()
 
+# Montando a pasta /static para posterior acesso dos arquivos
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Caminho da visualização dos dados
 @app.get("/")
 def index():
     return FileResponse("static/index.html")
 
+# Caminho da API
 @app.get('/professores')
 def professores():
-    print("tsasdfasftes")
     q = query("select * from professores")
     professores = jsonificador(q)
     return JSONResponse(content=professores, media_type="application/json")
 
+# Um método para "jsonificar" a query tendo em vista o uso pelo JQuery no HTML
 def jsonificador(string: str):
     json = []
     for i in string:
@@ -143,7 +151,7 @@ def query(q: str):
     connection = None
     cursor = None
     try:
-        # Conexão ao servidor MySQL/Postgres (estou usando o MySQL aqui)
+        # Conexão ao servidor MySQL/Postgres (estou usando o MySQL)
         connection = mysql.connector.connect(
             host="localhost",
             user="webservice",
@@ -163,7 +171,9 @@ def query(q: str):
     finally:
         # Código anti-cagada
         connection.close()
+        cursor.close()
 
+# Executando o Uvicorn para abrirmos um servidor web
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("web-service:app", host="localhost", port=8000, reload=True)
